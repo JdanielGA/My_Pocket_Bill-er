@@ -2,10 +2,40 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Customer Home</h1>
-    <p>Welcome to the customer management system.</p>
-    <h2>Options</h2>
-    <a href="{% url 'customers:add' %}">Add Customer</a>
-    <br>
-    <a href="{% url 'customers:list' %}">View Customers</a>
+<h1>Customer Home</h1>
+<p>Welcome to the customer management system.</p>
+<h2>Options</h2>
+<a href="{% url 'customers:add' %}">Add Customer</a>
+<br>
+<a href="{% url 'customers:list' %}">View Customers</a>
+
+<h2>Customer Statistics</h2>
+<p>Total Customers: {{ total_customers }}</p>
+
+<h3>Search Customers</h3>
+<form method="GET" action="{% url 'customers:home' %}">
+    <input type="text" name="q" placeholder="Search by name, email or ID" value="{{ search_term }}">
+    <button type="submit">Search</button>
+</form>
+<br>
+
+{% if search_term %}
+<h3>Search Results for "{{ search_term }}"</h3>
+{% else %}
+<h3>Recently Added Customers</h3>
+{% endif %}
+
+<ul>
+    {% for customer in customers %}
+    <li>
+        <!-- Buena práctica: enlazar al detalle del cliente -->
+        <a href="{{ customer.get_absolute_url }}">{{ customer.full_name }}</a>
+        ({{ customer.email }})
+    </li>
+    {% empty %}
+    <!-- Mensaje genérico que funciona si no hay clientes o no hay resultados -->
+    <li>No customers found.</li>
+    {% endfor %}
+</ul>
+
 {% endblock %}

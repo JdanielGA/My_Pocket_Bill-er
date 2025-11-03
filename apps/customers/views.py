@@ -1,12 +1,38 @@
 # apps/customers/views.py
+from django.db.models import Q
 from django.views.generic import TemplateView, CreateView, ListView, DetailView, UpdateView, DeleteView
 from .models import Customer
 from .forms import CustomerForm
 from django.urls import reverse_lazy
 
 # Home page view for the customers app.
-class CustomerHomeView(TemplateView):
+class CustomerHomeView(ListView):
+    model = Customer
     template_name = 'customers/customer_home.html'
+    context_object_name = 'customers'
+
+    # Functions to search customers by name, email or customer ID.
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_query = self.request.GET.get('q', None)
+        if search_query:
+            queryset = queryset.filter(
+                Q(first_name__icontains=search_query) |
+                Q(last_name__icontains=search_query) |
+                Q(email__icontains=search_query) |
+                Q(customer_id__icontains=search_query)
+            )
+        else:
+            queryset = queryset.order_by('-created_at')[:5]
+
+        return queryset
+    
+    # Get context data for the home page.
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['total_customers'] = Customer.objects.count()
+        context['recent_customers'] = Customer.objects.all().order_by('-created_at')[:5]
+        return context
 
 # Create view for adding a new customer.
 class CustomerCreateView(CreateView):
