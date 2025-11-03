@@ -1,0 +1,41 @@
+<!-- apps/customers/templates/customers/customer_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}Customer List{% endblock %}
+
+{% block content %}
+<a href="{% url 'customers:add' %}">Add Customer</a>
+    <h1>Customer List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Full Name</th>
+                <th>Customer ID</th>
+                <th>Email</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+                <tr>
+                    <td>{{ customer.full_name }}</td>
+                    <td>{{ customer.customer_id }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.get_customer_type_display }}</td>
+                    <td>
+                        <a href="{{ customer.get_absolute_url }}">View</a>
+                        <a href="{% url 'customers:edit' customer.slug %}">Edit</a>
+                        <a href="{% url 'customers:delete' customer.slug %}?next={{ request.path }}">Delete</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="5">No customers found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br><br>
+    <a href="{% url 'customers:home' %}">Back to Home</a>
+{% endblock %}

@@ -1,0 +1,20 @@
+<!-- apps/customers/templates/customers/customer_detail.html -->
+{% extends 'base.html' %}
+
+{% block title %}Customer Detail{% endblock %}
+
+{% block content %}
+    <h1>Customer Detail</h1>
+    <a href="{% url 'customers:edit' customer.pk %}">Edit</a>
+    <p><strong>Full Name:</strong> {{ customer.full_name }}</p>
+    <p><strong>Type:</strong> {{ customer.get_customer_type_display }}</p>
+    <p><strong>Customer ID:</strong> {{ customer.customer_id }}</p>
+    <p><strong>Email:</strong> {{ customer.email }}</p>
+    <p><strong>Country:</strong> {{ customer.country }}</p>
+    <p><strong>City:</strong> {{ customer.city }}</p>
+    <p><strong>Phone Number:</strong> {{ customer.phone_number }}</p>
+    <p><strong>Address:</strong> {{ customer.address }}</p>
+    <a href="{% url 'customers:delete' customer.slug %}?next={{ request.path }}">Delete</a>
+    <br><br>
+    <a href="{% url 'customers:list' %}">Back to Customer List</a>
+{% endblock %}

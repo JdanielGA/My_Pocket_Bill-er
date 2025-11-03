@@ -1,0 +1,15 @@
+<!-- apps/customers/templates/customers/customer_confirm_delete.html -->
+{% extends 'base.html' %}
+
+{% block title %}Delete Customer{% endblock %}
+
+{% block content %}
+    <h1>Delete Customer</h1>
+    <p>Are you sure you want to delete the customer "{{ customer.full_name }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirm Delete</button>
+        <br><br>
+        <a href="{{ next_url }}">Cancel</a>
+    </form>
+{% endblock %}

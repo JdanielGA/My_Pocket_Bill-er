@@ -5,8 +5,18 @@ from django.utils.text import slugify
 
 # Class for Customer model.
 class Customer(models.Model):
+
+    # Representation of a customer type in the system.
+    class CustomerType(models.TextChoices):
+        INDIVIDUAL = 'IN', 'Individual'
+        COMPANY = 'CO', 'Company'
+        STUDENT = 'ST', 'Student'
+        NON_PROFIT = 'NP', 'Non-Profit'
+
     first_name = models.CharField('First Name', max_length=50)
-    last_name = models.CharField('Last Name', max_length=50)
+    last_name = models.CharField('Last Name', max_length=50, blank=True, null=True)
+    customer_type = models.CharField('Customer Type', max_length=2, choices=CustomerType.choices , default=CustomerType.INDIVIDUAL)
+    customer_id = models.CharField('Customer ID', max_length=20, blank=True, null=True)
     email = models.EmailField('Email Address', unique=True)
     country = models.CharField('Country', max_length=50, blank=True, null=True)
     city = models.CharField('City', max_length=50, blank=True, null=True)
@@ -24,8 +34,10 @@ class Customer(models.Model):
 
     @property
     def full_name(self) -> str:
-        """Returns the full name of the customer. (Python 3.9+ type hint)"""
-        return f"{self.first_name} {self.last_name}"
+        """Returns the full name of the customer."""
+        if self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        return self.first_name
     
     def __str__(self) -> str:
         return self.full_name
